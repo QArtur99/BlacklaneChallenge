@@ -1,14 +1,13 @@
 package com.qartf.blacklanechallenge.ui
 
 import com.qartf.blacklanechallenge.data.model.Post
-import java.lang.Exception
 
 interface PostContract {
 
     interface Presenter {
         fun getPostList()
         fun setView(viewPost: View)
-        fun onDestroy()
+        fun onClear()
     }
 
     interface View {
