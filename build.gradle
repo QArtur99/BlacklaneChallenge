@@ -30,10 +30,10 @@ buildscript {
     versions.mockito_all = "1.10.19"
     versions.mockito_android = "2.25.0"
     versions.mockwebserver = "3.8.1"
-    versions.moshi = "1.8.0"
+    versions.moshi = '1.9.2'
     versions.navigation = '2.2.0-rc04'
     versions.preference = "1.1.0"
-    versions.retrofit = '2.6.1'
+    versions.retrofit = '2.7.1'
     versions.robolectric = '4.3.1'
     versions.room = '2.2.3'
     versions.support = '1.1.0'
@@ -42,24 +42,29 @@ buildscript {
     repositories {
         google()
         jcenter()
-        
+
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
+        classpath "com.diffplug.spotless:spotless-plugin-gradle:$versions.diffplug"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
+apply plugin: "com.diffplug.gradle.spotless"
 
 allprojects {
     repositories {
         google()
         jcenter()
-        
+
     }
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+spotless {
+    kotlin {
+        target "**/*.kt"
+        ktlint(versions.ktlint)
+    }
 }

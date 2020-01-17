@@ -12,5 +12,4 @@ class Repository(
     suspend fun getPostsAsync(): List<Post> {
         return api.getPostsAsync().await()
     }
-
 }

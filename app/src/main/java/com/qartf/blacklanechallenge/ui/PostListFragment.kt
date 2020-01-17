@@ -24,7 +24,9 @@ class PostListFragment : Fragment(), PostContract.View {
     private var postList: List<Post> = listOf()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_post_list, container, false)
         swipeRefresh = rootView.findViewById(R.id.swipe_refresh)
@@ -38,7 +40,6 @@ class PostListFragment : Fragment(), PostContract.View {
 
     private fun getClickListener() = object : PostAdapter.OnClickListener {
         override fun onClick(product: Post) {
-
         }
     }
 
