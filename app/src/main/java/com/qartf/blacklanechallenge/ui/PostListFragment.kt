@@ -1,5 +1,6 @@
 package com.qartf.blacklanechallenge.ui
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
@@ -8,8 +9,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.snackbar.Snackbar
 import com.qartf.blacklanechallenge.R
 import com.qartf.blacklanechallenge.data.model.Post
+import com.qartf.blacklanechallenge.util.ConnectionUtils
+import com.qartf.blacklanechallenge.util.Constants
 import com.qartf.blacklanechallenge.util.Constants.Companion.POST_LIST
 import com.qartf.blacklanechallenge.util.Constants.Companion.RECYCLER_VIEW_STATE
 import com.qartf.blacklanechallenge.util.MoshiConverter
@@ -23,12 +27,14 @@ class PostListFragment : Fragment(), PostContract.View {
     private lateinit var recyclerView: RecyclerView
     private var postList: List<Post> = listOf()
 
+    private lateinit var rootView: View
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.fragment_post_list, container, false)
+        rootView = inflater.inflate(R.layout.fragment_post_list, container, false)
         swipeRefresh = rootView.findViewById(R.id.swipe_refresh)
         recyclerView = rootView.findViewById(R.id.recyclerView)
 
@@ -40,6 +46,12 @@ class PostListFragment : Fragment(), PostContract.View {
 
     private fun getClickListener() = object : PostAdapter.OnClickListener {
         override fun onClick(product: Post) {
+            AlertDialog.Builder(context)
+                .setCancelable(false)
+                .setTitle("Post id")
+                .setMessage(product.id.toString())
+                .setPositiveButton("Ok") { _, _ -> }
+                .create().show()
         }
     }
 
@@ -60,6 +72,18 @@ class PostListFragment : Fragment(), PostContract.View {
 
     override fun setException(exception: Exception) {
         swipeRefresh.isRefreshing = false
+        if (ConnectionUtils.isConnectedToInternet(activity!!).not()) {
+            showSnackbar(Constants.NO_CONNECTION_ERROR_MESSAGE)
+            return
+        }
+        when (exception) {
+            else -> showSnackbar(exception::class.java.simpleName)
+        }
+    }
+
+    private fun showSnackbar(text: String) {
+        val view: View = activity!!.findViewById(android.R.id.content)
+        Snackbar.make(view, text, Snackbar.LENGTH_SHORT).show()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

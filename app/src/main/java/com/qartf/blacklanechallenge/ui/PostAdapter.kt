@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -11,7 +12,7 @@ import com.qartf.blacklanechallenge.R
 import com.qartf.blacklanechallenge.data.model.Post
 
 class PostAdapter(private val clickListener: OnClickListener) : ListAdapter<Post,
-        PostAdapter.ViewHolder>(GridViewDiffCallback) {
+    PostAdapter.ViewHolder>(GridViewDiffCallback) {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val product = getItem(position)
@@ -20,16 +21,18 @@ class PostAdapter(private val clickListener: OnClickListener) : ListAdapter<Post
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.row_post_item, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.item_post, parent, false)
         )
     }
 
-    class ViewHolder constructor(val binding: View) :
+    class ViewHolder constructor(private val binding: View) :
         RecyclerView.ViewHolder(binding) {
 
         fun bind(clickListener: OnClickListener, item: Post) {
+            val itemPostContainer: CardView = binding.findViewById(R.id.itemPostContainer)
             val title: TextView = binding.findViewById(R.id.title)
             val body: TextView = binding.findViewById(R.id.body)
+            itemPostContainer.setOnClickListener { clickListener.onClick(item) }
             title.text = item.title
             body.text = item.body
         }
