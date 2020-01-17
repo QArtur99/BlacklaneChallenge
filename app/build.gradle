@@ -16,7 +16,14 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner 'com.qartf.blacklanechallenge.util.CustomTestRunner'
+    }
+    sourceSets {
+        String sharedTestDir = 'src/sharedTest/java'
+        String debugDir = 'src/debug/java'
+        main.java.srcDirs += debugDir
+        test.java.srcDirs += sharedTestDir
+        androidTest.java.srcDirs += sharedTestDir
     }
     buildTypes {
         release {

@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
+import com.qartf.blacklanechallenge.OpenForTesting
 import com.qartf.blacklanechallenge.R
 import com.qartf.blacklanechallenge.data.model.Post
 import com.qartf.blacklanechallenge.util.ConnectionUtils
@@ -23,6 +24,7 @@ import com.qartf.blacklanechallenge.util.Constants.Companion.RECYCLER_VIEW_STATE
 import com.qartf.blacklanechallenge.util.MoshiConverter
 import org.koin.android.ext.android.inject
 
+@OpenForTesting
 class PostListFragment : Fragment(), PostContract.View {
 
     private val postPresenter: PostContract.Presenter by inject()
@@ -31,7 +33,7 @@ class PostListFragment : Fragment(), PostContract.View {
     private lateinit var recyclerView: RecyclerView
     private var postList: List<Post> = listOf()
 
-    private lateinit var rootView: View
+    internal lateinit var rootView: View
 
     override fun onCreateView(
         inflater: LayoutInflater,
