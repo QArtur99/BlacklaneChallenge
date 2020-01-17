@@ -4,8 +4,12 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -41,6 +45,7 @@ class PostListFragment : Fragment(), PostContract.View {
         recyclerView.adapter = PostAdapter(getClickListener())
         postPresenter.setView(this)
         initSwipeToRefresh()
+        setHasOptionsMenu(true)
         return rootView
     }
 
@@ -70,6 +75,13 @@ class PostListFragment : Fragment(), PostContract.View {
         swipeRefresh.isRefreshing = false
     }
 
+    fun setSearchList(postList: List<Post>) {
+        val adapter = recyclerView.adapter as PostAdapter
+        adapter.submitList(postList)
+        adapter.notifyDataSetChanged()
+        swipeRefresh.isRefreshing = false
+    }
+
     override fun setException(exception: Exception) {
         swipeRefresh.isRefreshing = false
         if (ConnectionUtils.isConnectedToInternet(activity!!).not()) {
@@ -84,6 +96,36 @@ class PostListFragment : Fragment(), PostContract.View {
     private fun showSnackbar(text: String) {
         val view: View = activity!!.findViewById(android.R.id.content)
         Snackbar.make(view, text, Snackbar.LENGTH_SHORT).show()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_search, menu)
+        val searchItem = menu.findItem(R.id.search)
+        val searchView = searchItem.actionView as SearchView
+        setSearchViewListener(searchView)
+        setOnQueryTextFocusChangeListener(searchItem, searchView)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    private fun setOnQueryTextFocusChangeListener(searchItem: MenuItem, searchView: SearchView) {
+        searchView.setOnQueryTextFocusChangeListener { view, b ->
+            if (b.not()) searchItem.collapseActionView()
+        }
+    }
+
+    private fun setSearchViewListener(searchView: SearchView) {
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                if (newText.isEmpty().not()) {
+                    setSearchList(postList.filter { it.title?.contains(newText) ?: false })
+                }
+                return true
+            }
+        })
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
