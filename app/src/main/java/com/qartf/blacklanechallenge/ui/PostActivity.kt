@@ -16,13 +16,17 @@ class PostActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        loadKoinModules(presenterModule)
+        if (runCatching { get<PostContract.Presenter>() }.getOrNull() == null) {
+            loadKoinModules(presenterModule)
+        }
         if (savedInstanceState == null) setFirstFragment(PostListFragment(), R.id.container)
     }
 
     override fun onDestroy() {
-        postPresenter.onClear()
-        unloadKoinModules(presenterModule)
+        if (isChangingConfigurations.not()) {
+            postPresenter.onClear()
+            unloadKoinModules(presenterModule)
+        }
         super.onDestroy()
     }
 }
